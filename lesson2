@@ -1,0 +1,116 @@
+package Lesson2;
+
+public class DZ {
+    public static void main(String[] args) {
+//    Array arr = new Array(1000000);
+//    arr.randomize(20);
+//    arr.bubbleSort();
+////    спустя 22 минут ожиданий и перегрева ноутбука прервал программу
+//    Array arr1 = new Array(1000000);
+//    arr1.randomize(20);
+//    arr1.selectSort();
+////    шла 14 минута сортировки - прерыванине программы
+    Array arr2 = new Array(1000000);
+    arr2.randomize(20);
+    arr2.insertSort();
+//    прошло 30 минут...перрвал программу. 
+//    на малых размерах массивов заметны изменения уменьшения времени при сортировке
+    }
+}
+class Array{
+    // класс работы с массивом
+    private int[] array;
+    private int lenght;
+    public Array(int len) {
+        this.lenght = len;
+        this.array = new int[len];
+        System.out.println("Массив создан");
+    }
+    public void randomize(int border) {
+        for (int i = 0; i < this.lenght; i++) {
+            int a = (int) ((Math.random()*border) - border/2);
+            this.addElement(i, a);
+        }
+    }
+    public int[] delElement(int elem) {
+        // удаления элемента
+        int i = 0;
+        // доступность переменной i после прохождения цикла
+        for (i=0; i < this.lenght; i++) {
+            if (this.array[i] == elem){
+                break;
+            }
+        }
+        for (int j = i; i < this.lenght ; j++) {
+            this.array[j] = this.array[j+1];
+        }
+        this.lenght--;
+        return this.array;
+    }
+    public void addElement(int index, int elem) {
+        // добавление элемента по индексу
+        this.array[index] = elem;
+    }
+    public void findIndexOfElement(int elem) {
+        // поиск индекса по элементу (void так как не знаю какое значение вернуть если не найден элемент)
+        for (int i = 0; i < this.lenght; i++) {
+            if(this.array[i] == elem) {
+                System.out.println(i);
+                return;
+            }
+        }
+        System.out.println("Данного элемента нет в массиве");
+    }
+    public int findElementByIndex(int index) {
+        // поиск по индексу
+        return this.array[index];
+    }
+    public void replace(int a, int b) {
+        int tmp = this.array[a];
+        this.array[a] = this.array[b];
+        this.array[b] = tmp;
+    }
+    public void bubbleSort() {
+        int high,low;
+        long FirstTime = System.currentTimeMillis();
+        for (high=this.lenght-1;high>=1;high--) {
+            for (low = 0;low<high;low++) {
+                if (this.array[low]>this.array[low+1]){
+                    replace(low,low+1);
+                }
+            }
+        }
+        long SecondTime = System.currentTimeMillis() - FirstTime;
+        System.out.printf("Массив отсортирован пузырьковым методом за %s ms\n", SecondTime);
+    }
+    public void selectSort() {
+        int first, second, marker;
+        long FirstTime = System.currentTimeMillis();
+        for (first = 0; first<this.lenght;first++) {
+            marker = first;
+            for (second=first+1;second<this.lenght;second++) {
+                if (this.array[second]>this.array[marker]) {
+                    marker = second;
+                }
+            }
+            replace(first,marker);
+        }
+        long SecondTime = System.currentTimeMillis() - FirstTime;
+        System.out.printf("Массив отсортирован методом выбора за %s ms\n", SecondTime);
+    }
+    public void insertSort() {
+        int first,second;
+        long FirstTime = System.currentTimeMillis();
+        for (first=1;first<this.lenght;first++) {
+            int tmp = this.array[first];
+            second=first;
+            while(second>0 && this.array[second-1]>=tmp) {
+                this.array[second] = this.array[second-1];
+                --second;
+            }
+            this.array[second] = tmp;
+        }
+        long SecondTime = System.currentTimeMillis() - FirstTime;
+        System.out.printf("Массив отсортирован методом вставки за %s ms\n", SecondTime);
+    }
+}
