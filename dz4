@@ -1,0 +1,198 @@
+package Lesson3;
+
+import java.util.ArrayList;
+
+public class DZ {
+    public static void main(String[] args) {
+        System.out.println(reverseString("привет")); // 2 задание
+
+        hunterSort One = new hunterSort(30,20,30); // 4 задание
+        One.aim();
+        ArrayList<int[]> a = new ArrayList<>();
+        a.add(new int[] {2,2});
+        a.add(new int[] {1,1});
+        a.add(new int[] {3,4});
+        a.add(new int[] {5,5});
+        a.add(new int[] {1,2});
+        a.add(new int[] {2,4});
+        hunterSort Two = new hunterSort(a);
+        Two.aim();
+    }
+
+    static String reverseString(String str) { // 2 задание
+        Stack<String> in = new Stack(str.length());
+        for (int i = 0; i <in.maxSize ; i++) {
+         in.push(Character.toString(str.charAt(i)));
+        }
+        String str1 = "";
+        while(!in.isEmpty()) {
+            str1 += in.peek();
+            in.pop();
+        }
+        return str1;
+    }
+    // 1 задание, попытался сделать параметризацию для использования,
+    // но приходится кастовать типы при строке для внутренних методов
+     static class Stack<T>{
+        private int maxSize;
+        private T[] stack;
+        private int top;
+
+        public Stack(int size){
+            this.maxSize = size;
+            this.stack = (T[])(new Object[this.maxSize]);
+            this.top = -1;
+        }
+        public boolean isEmpty(){
+            return (this.top == -1);
+        }
+
+        public boolean isFull(){
+            return (this.top == this.maxSize-1);
+        }
+        public void push(T i){
+            this.stack[++this.top] = i;
+        }
+        public T pop(){
+            return this.stack[this.top--];
+        }
+        public T peek() {
+            return this.stack[this.top];
+        }
+    }
+    class Queue<T>{
+        private int maxSize;
+        private T[] queue;
+        private int front;
+        private int rear;
+        private int items;
+
+        public Queue(int s){
+            maxSize = s;
+            queue = (T[]) (new Object[maxSize]);
+            front = 0;
+            rear = -1;
+            items = 0;
+        }
+        public void insert(T i){
+            if(rear == maxSize-1)
+                rear = -1;
+            queue[++rear] = i;
+            items++;
+        }
+
+        public T remove(){
+            T temp = queue[front++];
+            if(front == maxSize)
+                front = 0;
+            items--;
+            return temp;
+        }
+
+        public T peek(){
+            return queue[front];
+        }
+        public boolean isEmpty(){
+            return (items==0);
+        }
+
+        public boolean isFull(){
+            return (items==maxSize);
+        }
+
+        public int size(){
+            return items;
+        }
+    }
+    class PriorityQueue{ // 3 задание
+        private int maxSize;
+        private int[] queueArray;
+        private int items;
+
+        public PriorityQueue(int i){
+            maxSize = i;
+            queueArray = new int[maxSize];
+            items = 0;
+        }
+        public void insert(int item){
+            int i;
+            if(items==0)
+                queueArray[items++] = item;
+            else{
+                for(i=items-1; i>=0; i--){
+                    if( item > queueArray[i] )
+                        queueArray[i+1] = queueArray[i];
+                    else
+                        break;
+                }
+                queueArray[i+1] = item; // Вставка элемента
+                items++;
+            }
+        }
+        public int remove(){
+            return queueArray[--items];
+        }
+        public long peek(){
+            return queueArray[items-1];
+        }
+
+        public boolean isEmpty(){
+            return (items==0);
+        }
+        public boolean isFull(){
+            return (items == maxSize);
+        }
+    }
+    static class hunterSort{
+        // 4 задание
+        // Сортировка применилась для правильного подсчета попаданий по прямой
+        // y=kx if(y=k,x=k) - пересечение с прямой
+        private ArrayList<int[]> coord; // список координаты
+
+        public hunterSort(int size, int yMax, int xMax){
+            ArrayList<int[]> arrayList = new ArrayList();
+            for (int i = 0; i <size ; i++) {
+                //собираем список координат
+            arrayList.add(new int[] {(int) ((Math.random() * xMax) + 1),(int) ((Math.random() * yMax)+1)});
+            }
+            System.out.println("Список коэффициентов готов");
+            this.coord = arrayList;
+
+        }
+        public hunterSort(ArrayList<int[]> arrayList){ // для своих данных в формате {х,у}
+            this.coord = arrayList;
+        }
+
+        public void aim() {
+            // собираем список коэффициентов
+            float[] k = new float[this.coord.size()];
+            for (int i = 0; i <this.coord.size() ; i++) {
+                k[i] = (float) this.coord.get(i)[1]/this.coord.get(i)[0];
+            }
+            // сортируем
+            int first,second;
+            for (first=1;first<k.length;first++) {
+                float tmp = k[first];
+                second=first;
+                while(second>0 && k[second-1]>=tmp) {
+                    k[second] = k[second-1];
+                    --second;
+                }
+                k[second] = tmp;
+            }
+            //считаем
+            int cnt = 0;
+            System.out.println("Начинаем подсчет");
+            for (int i = 0; i <k.length-1; i++) {
+                if (k[i]==k[i+1]){
+                    if(k[i]!=k[i+1]) {
+                        System.out.println("Выстрел убьет " + cnt + "галок");
+                        cnt=0;
+                    }
+                    cnt++;
+                }
+            }
+            System.out.println("Выстрел убьет " + cnt + "галок");
+        }
+    }
+}
